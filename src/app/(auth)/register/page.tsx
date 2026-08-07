@@ -11,14 +11,25 @@ import {
     HiEyeSlash,
     HiCodeBracket
 } from 'react-icons/hi2';
+import { authClient } from '@/lib/auth-client';
 
 export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => setIsVisible((prev) => !prev);
-    const loginHandle = { e: React.FormEvent<HTMLFormElement> }=> {
-        e.preventDefault()
-    }
+    const registerHandle = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+        const { data: user, error } = await authClient.signUp.email({
+            name: data.name as string, // required
+            email: data.email as string, // required
+            password: data.password as string, // required
+
+        });
+        console.log(user, error, 'both are one');
+        console.log(data, 'from reigster')
+    };
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
 
@@ -45,57 +56,37 @@ export default function RegisterForm() {
 
                 {/* HeroUI Form Container */}
                 <Form
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={registerHandle}
                     validationBehavior="native"
                     className="flex flex-col gap-4"
                 >
                     {/* Full Name Input */}
                     <Input
-                        isRequired
+                        required
                         name="name"
                         type="text"
-                        label="Full Name"
                         placeholder="Enter your full name"
-                        labelPlacement="outside"
-                        errorMessage="Please enter your full name"
-                        startContent={<HiUser className="text-slate-400 w-5 h-5 pointer-events-none shrink-0" />}
-                        variant="bordered"
                         color="primary"
-                        classNames={{
-                            inputWrapper: "border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors",
-                            label: "text-slate-700 dark:text-slate-200 font-semibold text-sm",
-                        }}
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
                     />
 
                     {/* Email Address Input */}
                     <Input
-                        isRequired
+                        required
                         name="email"
                         type="email"
-                        label="Email Address"
                         placeholder="name@example.com"
-                        labelPlacement="outside"
-                        errorMessage="Please enter a valid email address"
-                        startContent={<HiEnvelope className="text-slate-400 w-5 h-5 pointer-events-none shrink-0" />}
-                        variant="bordered"
                         color="primary"
-                        classNames={{
-                            inputWrapper: "border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors",
-                            label: "text-slate-700 dark:text-slate-200 font-semibold text-sm",
-                        }}
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
                     />
 
                     {/* Password Input with Toggle */}
                     <Input
-                        isRequired
+                        required
                         name="password"
                         type={isVisible ? "text" : "password"}
-                        label="Password"
                         placeholder="Minimum 6 characters"
-                        labelPlacement="outside"
                         minLength={6}
-                        errorMessage="Password must be at least 6 characters long"
-                        startContent={<HiLockClosed className="text-slate-400 w-5 h-5 pointer-events-none shrink-0" />}
                         endContent={
                             <button
                                 type="button"
@@ -110,12 +101,9 @@ export default function RegisterForm() {
                                 )}
                             </button>
                         }
-                        variant="bordered"
                         color="primary"
-                        classNames={{
-                            inputWrapper: "border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors",
-                            label: "text-slate-700 dark:text-slate-200 font-semibold text-sm",
-                        }}
+                        classNames="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+
                     />
 
                     {/* Submit Button */}
