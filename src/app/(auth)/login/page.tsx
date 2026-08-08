@@ -1,21 +1,29 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Form, Input, Checkbox, Button, Label, FieldError } from '@heroui/react';
+import { Input, Checkbox, Button, Spinner } from '@heroui/react';
 import {
-    HiEnvelope,
-    HiLockClosed,
-    HiEye,
-    HiEyeSlash,
+
     HiCodeBracket
 } from 'react-icons/hi2';
+import { authClient } from '@/lib/auth-client';
+import { useState } from 'react';
 
 export default function LoginForm() {
-    const [isVisible, setIsVisible] = useState(false);
-
-    const toggleVisibility = () => setIsVisible((prev) => !prev);
-
+    const [loading, setLoading] = useState(false)
+    const loginHandle = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log('some');
+        setLoading(true)
+        const formData = new FormData(e.currentTarget)
+        const user = Object.fromEntries(formData.entries())
+        const { data, error } = await authClient.signIn.email({
+            email: user.email as string, // required
+            password: user.password as string, // required
+        });
+        setLoading(false)
+        console.log(data, error);
+    }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
 
@@ -41,71 +49,35 @@ export default function LoginForm() {
                 </div>
 
                 {/* HeroUI Form Container */}
-                <Form
-                    onSubmit={(e) => e.preventDefault()}
-                    validationBehavior="native"
+                <form
+                    onSubmit={loginHandle}
                     className="flex flex-col gap-4"
                 >
                     {/* Email Address Input */}
                     <Input
-                        isRequired
+                        required
                         name="email"
                         type="email"
-                        label="Email Address"
                         placeholder="name@example.com"
-                        labelPlacement="outside"
-                        errorMessage="Please enter a valid email address"
-                        startContent={<HiEnvelope className="text-slate-400 w-5 h-5 pointer-events-none shrink-0" />}
-                        variant="bordered"
                         color="primary"
-                        classNames={{
-                            inputWrapper: "border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors",
-                            label: "text-slate-700 dark:text-slate-200 font-semibold text-sm",
-                        }}
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+
                     />
 
                     {/* Password Input with Show/Hide Toggle */}
                     <Input
                         required
                         name="password"
-                        type={isVisible ? "text" : "password"}
-
+                        type="password"
                         placeholder="Enter your password"
-                        startContent={<HiLockClosed className="text-slate-400 w-5 h-5 pointer-events-none shrink-0" />}
-                        endContent={
-                            <button
-                                type="button"
-                                onClick={toggleVisibility}
-                                aria-label="toggle password visibility"
-                                className="focus:outline-none p-1 rounded-md text-slate-400 hover:text-cyan-500 transition-colors"
-                            >
-                                {isVisible ? (
-                                    <HiEyeSlash className="w-5 h-5" />
-                                ) : (
-                                    <HiEye className="w-5 h-5" />
-                                )}
-                            </button>
-                        }
                         color="primary"
-                        classNames={{
-                            inputWrapper: "border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors",
-                            label: "text-slate-700 dark:text-slate-200 font-semibold text-sm",
-                        }}
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+
                     />
 
                     {/* Remember Me & Forgot Password Row */}
                     <div className="flex items-center justify-between py-1">
-                        <div className="flex flex-col gap-3">
 
-                            <Checkbox isInvalid isRequired name="agreement">
-                                <Checkbox.Content>
-                                    <Checkbox.Control>
-                                        <Checkbox.Indicator />
-                                    </Checkbox.Control>
-                                    Remember Me
-                                </Checkbox.Content>
-                            </Checkbox>
-                        </div>
 
                         <Link
                             href="/forgot-password"
@@ -121,9 +93,16 @@ export default function LoginForm() {
                         size="lg"
                         className="w-full mt-2 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-200"
                     >
-                        Sign In
+                        {
+                            loading ?
+                                <Spinner color="current" />
+
+                                :
+                                'Sign In'
+                        }
+
                     </Button>
-                </Form>
+                </form>
 
                 {/* Register Navigation Link */}
                 <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">

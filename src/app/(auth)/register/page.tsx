@@ -2,23 +2,18 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Form, Input, Button } from '@heroui/react';
+import { Form, Input, Button, Spinner } from '@heroui/react';
 import {
-    HiUser,
-    HiEnvelope,
-    HiLockClosed,
-    HiEye,
-    HiEyeSlash,
+
     HiCodeBracket
 } from 'react-icons/hi2';
 import { authClient } from '@/lib/auth-client';
 
 export default function RegisterForm() {
-    const [isVisible, setIsVisible] = useState(false);
-
-    const toggleVisibility = () => setIsVisible((prev) => !prev);
+    const [loading, setLoading] = useState(false);
     const registerHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData.entries())
         const { data: user, error } = await authClient.signUp.email({
@@ -27,6 +22,7 @@ export default function RegisterForm() {
             password: data.password as string, // required
 
         });
+        setLoading(false);
         console.log(user, error, 'both are one');
         console.log(data, 'from reigster')
     };
@@ -84,25 +80,11 @@ export default function RegisterForm() {
                     <Input
                         required
                         name="password"
-                        type={isVisible ? "text" : "password"}
+                        type="password"
                         placeholder="Minimum 6 characters"
                         minLength={6}
-                        endContent={
-                            <button
-                                type="button"
-                                onClick={toggleVisibility}
-                                aria-label="toggle password visibility"
-                                className="focus:outline-none p-1 rounded-md text-slate-400 hover:text-cyan-500 transition-colors"
-                            >
-                                {isVisible ? (
-                                    <HiEyeSlash className="w-5 h-5" />
-                                ) : (
-                                    <HiEye className="w-5 h-5" />
-                                )}
-                            </button>
-                        }
                         color="primary"
-                        classNames="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
 
                     />
 
@@ -112,7 +94,12 @@ export default function RegisterForm() {
                         size="lg"
                         className="w-full mt-2 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-200"
                     >
-                        Register Account
+                        {
+                            loading ?
+                                <Spinner color="current" />
+                                :
+                                'Register'
+                        }
                     </Button>
                 </Form>
 
