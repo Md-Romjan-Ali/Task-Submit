@@ -1,17 +1,27 @@
 'use client';
 
-import { Form, Button } from '@heroui/react';
+import { postSubmitData, TaskData } from '@/lib/post';
+import { userSession } from '@/lib/session';
+import { Button } from '@heroui/react';
 import {
     HiDocumentText,
-    HiPaperAirplane,
     HiCheckCircle
 } from 'react-icons/hi2';
 
 export default function TaskSubmitForm() {
-    const submtHandle = async (e) => {
+    const submtHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const task = e.currentTarget.task.value;
-        console.log(task);
+        const user = await userSession()
+        console.log(user, 'user');
+        const formData = new FormData(e.currentTarget)
+        console.log(formData, 'and');
+        const task: TaskData = {
+            task: formData.get('task') as string,
+            email: user?.email as string
+        }
+
+        const reutl = await postSubmitData(task)
+        console.log(reutl);
     }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -33,9 +43,8 @@ export default function TaskSubmitForm() {
                 </div>
 
                 {/* Form Container */}
-                <Form
+                <form
                     onSubmit={submtHandle}
-                    validationBehavior="native"
                     className="flex flex-col gap-5"
                 >
                     {/* Universal Multi-Purpose Text Area */}
@@ -48,12 +57,11 @@ export default function TaskSubmitForm() {
                     <Button
                         type="submit"
                         size="lg"
-                        endContent={<HiPaperAirplane className="w-5 h-5" />}
                         className="w-full mt-2 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-200"
                     >
                         Submit Task
                     </Button>
-                </Form>
+                </form>
 
                 {/* Footer Note */}
                 <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
