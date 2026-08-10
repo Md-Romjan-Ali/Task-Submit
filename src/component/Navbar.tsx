@@ -17,7 +17,7 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
 
-    { label: 'My-Task', href: '/my-tasks' },
+    { label: 'My-Task', href: '/my-task' },
     { label: 'All-Task', href: '/all-tasks' },
     { label: 'Task-Submit', href: '/submit' },
 ];

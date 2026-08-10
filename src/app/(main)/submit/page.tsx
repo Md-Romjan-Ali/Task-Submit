@@ -1,5 +1,6 @@
 'use client';
 
+import { authClient } from '@/lib/auth-client';
 import { postSubmitData, TaskData } from '@/lib/post';
 import { userSession } from '@/lib/session';
 import { Button } from '@heroui/react';
@@ -9,17 +10,16 @@ import {
 } from 'react-icons/hi2';
 
 export default function TaskSubmitForm() {
+    const { data: session } = authClient.useSession()
+    const email = session?.user.email as string
     const submtHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const user = await userSession()
-        console.log(user, 'user');
         const formData = new FormData(e.currentTarget)
         console.log(formData, 'and');
         const task: TaskData = {
             task: formData.get('task') as string,
-            email: user?.email as string
+            email
         }
-
         const reutl = await postSubmitData(task)
         console.log(reutl);
     }
