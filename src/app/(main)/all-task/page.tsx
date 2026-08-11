@@ -58,7 +58,7 @@ export default async function TodayTasks() {
                 <div>
                     <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                         <HiCalendar className="w-7 h-7 text-cyan-500" />
-                        Today's Task Submissions
+                        Today`s Task Submissions
                     </h1>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                         {todayFormatted}
@@ -164,7 +164,7 @@ export default async function TodayTasks() {
                                                     No task submitted for today ({new Date().toLocaleDateString()}).
                                                 </p>
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                                    {displayName} ({item.email}) has not submitted any work for today's assignment yet.
+                                                    {displayName} ({item.email}) has not submitted any work for today`s assignment yet.
                                                 </p>
                                             </div>
                                         </div>

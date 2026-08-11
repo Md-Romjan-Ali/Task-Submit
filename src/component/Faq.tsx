@@ -1,6 +1,6 @@
 'use client';
 
-import { Accordion, AccordionItem } from '@heroui/react';
+import { Accordion } from '@heroui/react';
 import { BiChevronDown } from 'react-icons/bi';
 import {
     HiUserPlus,

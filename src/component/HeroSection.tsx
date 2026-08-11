@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { Button } from '@heroui/react';
-import { HiPlay, HiDocumentCheck, HiArrowRight } from 'react-icons/hi2';
+import { HiPlay, HiDocumentCheck } from 'react-icons/hi2';
 import Image from 'next/image';
 
 export default function Hero() {

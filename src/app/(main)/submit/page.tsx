@@ -2,7 +2,6 @@
 
 import { authClient } from '@/lib/auth-client';
 import { postSubmitData, TaskData } from '@/lib/post';
-import { userSession } from '@/lib/session';
 import { Button } from '@heroui/react';
 import {
     HiDocumentText,

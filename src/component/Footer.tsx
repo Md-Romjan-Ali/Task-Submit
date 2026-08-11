@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { Button, Input } from '@heroui/react';
 import {
     HiCodeBracket,
-    HiEnvelope,
-    HiPaperAirplane,
     HiHeart
 } from 'react-icons/hi2';
 import {
