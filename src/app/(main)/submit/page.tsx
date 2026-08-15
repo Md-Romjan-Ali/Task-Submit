@@ -11,13 +11,15 @@ import {
 export default function TaskSubmitForm() {
     const { data: session } = authClient.useSession()
     const email = session?.user.email as string
+    const image = session?.user.image as string
     const submtHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         console.log(formData, 'and');
         const task: TaskData = {
             task: formData.get('task') as string,
-            email
+            email,
+            image
         }
         const reutl = await postSubmitData(task)
         console.log(reutl);
