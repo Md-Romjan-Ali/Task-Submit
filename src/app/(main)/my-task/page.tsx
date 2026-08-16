@@ -1,4 +1,5 @@
 
+import DeleteButton from '@/component/DeleteButton';
 import { getDataByEmail } from '@/lib/get';
 import { userSession } from '@/lib/session';
 import Linkify from 'linkify-react';
@@ -130,13 +131,7 @@ export default async function TaskTable() {
                                             </button>
 
                                             {/* Delete Button */}
-                                            <button
-                                                type="button"
-                                                title="Delete Task"
-                                                className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-200"
-                                            >
-                                                <HiTrash className="w-5 h-5" />
-                                            </button>
+                                            <DeleteButton id={item._id} />
 
                                         </div>
                                     </td>

@@ -15,14 +15,14 @@ export default function TaskSubmitForm() {
     const submtHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
-        console.log(formData, 'and');
+
         const task: TaskData = {
             task: formData.get('task') as string,
             email,
             image
         }
         const reutl = await postSubmitData(task)
-        console.log(reutl);
+        console.log(reutl, 'and', task);
     }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
