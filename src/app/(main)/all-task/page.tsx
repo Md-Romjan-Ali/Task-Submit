@@ -1,10 +1,11 @@
+import DeleteButton from '@/component/DeleteButton';
 import { getDataByEmail, getTask } from '@/lib/get';
+import { userSession } from '@/lib/session';
 import {
     HiCalendar,
     HiCheckCircle,
     HiExclamationTriangle,
     HiEnvelope,
-    HiTrash,
     HiClock,
     HiArrowTopRightOnSquare
 } from 'react-icons/hi2';
@@ -49,7 +50,8 @@ export default async function TodayTasks() {
         month: 'long',
         day: 'numeric',
     });
-
+    const user = await userSession()
+    console.log(user, 'from all task');
     return (
         <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
 
@@ -122,14 +124,12 @@ export default async function TodayTasks() {
                                                 <HiExclamationTriangle className="w-4 h-4" /> Task Pending
                                             </span>
                                         )}
+                                        {
+                                            item.email === user?.email
+                                            &&
+                                            <DeleteButton id={item._id as string} />
+                                        }
 
-                                        <button
-                                            type="button"
-                                            title="Delete Entry"
-                                            className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors"
-                                        >
-                                            <HiTrash className="w-5 h-5" />
-                                        </button>
                                     </div>
 
                                 </div>

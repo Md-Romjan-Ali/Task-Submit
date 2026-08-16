@@ -3,6 +3,7 @@
 import { authClient } from '@/lib/auth-client';
 import { postSubmitData, TaskData } from '@/lib/post';
 import { Button } from '@heroui/react';
+import { useState } from 'react';
 import {
     HiDocumentText,
     HiCheckCircle
@@ -12,8 +13,10 @@ export default function TaskSubmitForm() {
     const { data: session } = authClient.useSession()
     const email = session?.user.email as string
     const image = session?.user.image as string
+    const [loading, setLoading] = useState(false)
     const submtHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setLoading(true)
         const formData = new FormData(e.currentTarget)
 
         const task: TaskData = {
@@ -23,6 +26,7 @@ export default function TaskSubmitForm() {
         }
         const reutl = await postSubmitData(task)
         console.log(reutl, 'and', task);
+        setLoading(false)
     }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -60,7 +64,10 @@ export default function TaskSubmitForm() {
                         size="lg"
                         className="w-full mt-2 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-200"
                     >
-                        Submit Task
+                        {
+                            loading ?
+                                'submiting....' : 'Submit Task'
+                        }
                     </Button>
                 </form>
 

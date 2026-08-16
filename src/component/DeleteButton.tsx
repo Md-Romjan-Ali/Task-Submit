@@ -1,19 +1,22 @@
 "use client"
 import { deleteTask } from '@/lib/delete';
+import { useRouter } from 'next/navigation';
 import { HiTrash } from 'react-icons/hi2';
+import { toast } from 'react-toast';
 interface Id {
     id: string
 }
 const DeleteButton = ({ id }: Id) => {
+    const router = useRouter()
     const deleteHandle = async () => {
-        const deleteTaskOne = await deleteTask(id)
-        console.log(deleteTaskOne, 'from dlete');
+        await deleteTask(id)
+        router.refresh()
+        toast.error('deleted parmanent')
     }
     return (
         <div>
             <button
                 onClick={deleteHandle}
-                type="button"
                 title="Delete Task"
                 className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white transition-all duration-200"
             >
