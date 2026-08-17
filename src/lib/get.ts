@@ -9,10 +9,7 @@ export const getTask = async () => {
     return fetchData(`/api/getsubmit`)
 }
 export const getDataByEmail = async (email?: string) => {
-    const res = await fetch(`${serverUri}/api/getsubmitbyemail?email=${email}`, {
-        cache: 'no-store'
-    })
-    return res.json()
+    return fetchData(`/api/getsubmitbyemail?email=${email}`)
 }
 // all user
 export const alluser = async () => {
