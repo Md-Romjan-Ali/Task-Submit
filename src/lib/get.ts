@@ -13,9 +13,5 @@ export const getDataByEmail = async (email?: string) => {
 }
 // all user
 export const alluser = async () => {
-    const res = await fetch(`${serverUri}/api/getuser`, {
-        cache: 'no-store'
-    })
-    console.log(res.status, 'statuse');
-    return res.json()
+    return fetchData(`/api/getuser`)
 }
