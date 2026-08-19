@@ -8,6 +8,7 @@ import {
 } from 'react-icons/hi2';
 import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
+import { resetPassword } from '@/lib/post';
 
 export default function LoginForm() {
     const [loading, setLoading] = useState(false)
@@ -23,6 +24,11 @@ export default function LoginForm() {
         });
         setLoading(false)
         console.log(data, error);
+    }
+    const email = 'romjan.merndev@gmail.com'
+    const forgottPasswordHandle = async () => {
+        const resetPost = await resetPassword(email as string)
+        console.log(resetPost, 'from login');
     }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -79,12 +85,12 @@ export default function LoginForm() {
                     <div className="flex items-center justify-between py-1">
 
 
-                        <Link
-                            href="/forgot-password"
+                        <button
+                            onClick={() => forgottPasswordHandle()}
                             className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
                         >
                             Forgot password?
-                        </Link>
+                        </button>
                     </div>
 
                     {/* Submit Button */}

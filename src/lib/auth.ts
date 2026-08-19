@@ -1,7 +1,7 @@
 import { setServers } from "node:dns";
 setServers(["8.8.8.8", "8.8.4.4"]);
 
-import { betterAuth } from "better-auth";
+import { betterAuth, string } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
@@ -16,4 +16,20 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                defaultValue: 'user',
+            },
+            resetCode: {
+                type: "number",
+                defaultValue: null
+            },
+            resetCodeExpires: {
+                type: "number",
+                defaultValue: null
+            }
+        },
+    }
 });
