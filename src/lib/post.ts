@@ -15,13 +15,13 @@ export const postSubmitData = async (task: TaskData) => {
     return res.json()
 }
 // 
-export const resetPassword = async (email: string ) => {
+export const resetPassword = async (email: string) => {
     const res = await fetch(`${serverUri}/forgot-password`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(email)
+        body: JSON.stringify({ email })
     })
     return res.json()
 }

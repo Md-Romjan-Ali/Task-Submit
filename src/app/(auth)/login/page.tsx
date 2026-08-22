@@ -8,27 +8,35 @@ import {
 } from 'react-icons/hi2';
 import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
-import { resetPassword } from '@/lib/post';
+import AuthMessage from '@/component/auth/AuthMessage';
 
 export default function LoginForm() {
     const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
+    const [unverified, setUnverified] = useState(false)
     const loginHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log('some');
+        setMessage(null)
+        setUnverified(false)
         setLoading(true)
         const formData = new FormData(e.currentTarget)
         const user = Object.fromEntries(formData.entries())
-        const { data, error } = await authClient.signIn.email({
-            email: user.email as string, // required
-            password: user.password as string, // required
-        });
-        setLoading(false)
-        console.log(data, error);
-    }
-    const email = 'romjan.merndev@gmail.com'
-    const forgottPasswordHandle = async () => {
-        const resetPost = await resetPassword(email as string)
-        console.log(resetPost, 'from login');
+        try {
+            const { error } = await authClient.signIn.email({
+                email: user.email as string,
+                password: user.password as string,
+            });
+            if (error) {
+                const errorText = error.message || 'Unable to sign in. Please check your details.'
+                const isUnverified = errorText.toLowerCase().includes('not verified') || errorText.toLowerCase().includes('verify your email')
+                setUnverified(isUnverified)
+                setMessage({ type: 'error', text: isUnverified ? 'Please verify your email before signing in.' : errorText })
+            }
+        } catch {
+            setMessage({ type: 'error', text: 'Unable to sign in. Please try again.' })
+        } finally {
+            setLoading(false)
+        }
     }
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -59,6 +67,7 @@ export default function LoginForm() {
                     onSubmit={loginHandle}
                     className="flex flex-col gap-4"
                 >
+                    {message && <AuthMessage type={message.type}>{message.text}</AuthMessage>}
                     {/* Email Address Input */}
                     <Input
                         required
@@ -66,7 +75,7 @@ export default function LoginForm() {
                         type="email"
                         placeholder="name@example.com"
                         color="primary"
-                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:border-cyan-500! bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
 
                     />
 
@@ -77,20 +86,15 @@ export default function LoginForm() {
                         type="password"
                         placeholder="Enter your password"
                         color="primary"
-                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:border-cyan-500! bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
 
                     />
 
                     {/* Remember Me & Forgot Password Row */}
                     <div className="flex items-center justify-between py-1">
-
-
-                        <button
-                            onClick={() => forgottPasswordHandle()}
-                            className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                        >
-                            Forgot password?
-                        </button>
+                        <Link href="/forgot-password" className="text-xs font-semibold text-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                            Forgot Password?
+                        </Link>
                     </div>
 
                     {/* Submit Button */}
@@ -109,7 +113,14 @@ export default function LoginForm() {
 
                     </Button>
                 </form>
-
+                {unverified && (
+                    <Link
+                        href="/resend-verification"
+                        className="mt-4 block text-center text-sm font-semibold text-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                    >
+                        Resend Verification Email
+                    </Link>
+                )}
                 {/* Register Navigation Link */}
                 <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
                     Do not have an account?{' '}

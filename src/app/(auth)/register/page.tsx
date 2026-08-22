@@ -8,23 +8,32 @@ import {
     HiCodeBracket
 } from 'react-icons/hi2';
 import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import AuthMessage from '@/component/auth/AuthMessage';
 
 export default function RegisterForm() {
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const router = useRouter();
     const registerHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrorMessage(null);
         setLoading(true);
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData.entries())
-        const { data: user, error } = await authClient.signUp.email({
-            name: data.name as string, // required
-            email: data.email as string, // required
-            password: data.password as string, // required
-
-        });
-        setLoading(false);
-        console.log(user, error, 'both are one');
-        console.log(data, 'from reigster')
+        try {
+            const { error } = await authClient.signUp.email({
+                name: data.name as string,
+                email: data.email as string,
+                password: data.password as string,
+            });
+            if (error) setErrorMessage(error.message || 'Unable to create your account.');
+            else router.push('/check-email');
+        } catch {
+            setErrorMessage('Unable to create your account. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -56,6 +65,7 @@ export default function RegisterForm() {
                     validationBehavior="native"
                     className="flex flex-col gap-4"
                 >
+                    {errorMessage && <AuthMessage type="error">{errorMessage}</AuthMessage>}
                     {/* Full Name Input */}
                     <Input
                         required
@@ -63,7 +73,7 @@ export default function RegisterForm() {
                         type="text"
                         placeholder="Enter your full name"
                         color="primary"
-                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:border-cyan-500! bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
                     />
 
                     {/* Email Address Input */}
@@ -73,7 +83,7 @@ export default function RegisterForm() {
                         type="email"
                         placeholder="name@example.com"
                         color="primary"
-                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:border-cyan-500! bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
                     />
 
                     {/* Password Input with Toggle */}
@@ -84,7 +94,7 @@ export default function RegisterForm() {
                         placeholder="Minimum 6 characters"
                         minLength={6}
                         color="primary"
-                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:!border-cyan-500 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
+                        className="border-cyan-500/30 hover:border-cyan-500 focus-within:border-cyan-500! bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm transition-colors"
 
                     />
 

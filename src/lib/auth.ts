@@ -1,7 +1,7 @@
 import { setServers } from "node:dns";
 setServers(["8.8.8.8", "8.8.4.4"]);
 
-import { betterAuth, string } from "better-auth";
+import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
@@ -15,6 +15,28 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
+        // sendResetPassword: async ({ user, url }) => {
+        //     await sendAuthEmail({
+        //         recipient: user.email,
+        //         subject: "Reset your ProgramHero password",
+        //         title: "Reset your password",
+        //         message: "Use the link below to choose a new password. This link will expire soon.",
+        //         url,
+        //     });
+        // },
+    },
+    emailVerification: {
+        sendOnSignUp: true,
+        autoSignInAfterVerification: false,
+        // sendVerificationEmail: async ({ user, url }) => {
+        //     await sendAuthEmail({
+        //         recipient: user.email,
+        //         subject: "Verify your ProgramHero email",
+        //         title: "Verify your email",
+        //         message: "Please verify your email address before signing in to ProgramHero.",
+        //         url,
+        //     });
+        // },
     },
     user: {
         additionalFields: {
