@@ -12,6 +12,6 @@ export const getDataByEmail = async (email?: string) => {
     return fetchData(`/api/getsubmitbyemail?email=${email}`)
 }
 // all user
-export const alluser = async () => {
+export const getAllUser = async () => {
     return fetchData(`/api/getuser`)
 }

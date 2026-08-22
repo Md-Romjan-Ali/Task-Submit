@@ -11,7 +11,7 @@ import {
 } from 'react-icons/hi2';
 
 // Matches MongoDB task document structure
-interface TaskDocument {
+export interface TaskDocument {
     _id: string;
     task?: string; // Submitted link or undefined/empty
     email: string;
@@ -22,9 +22,7 @@ export default async function TodayTasks() {
     const taskList: TaskDocument[] = await getTask();
 
     // Helper: Compare date string against today's local date
-    const isSubmittedToday = (dateString: string, taskContent?: string) => {
-        if (!taskContent || taskContent.trim() === "") return false;
-
+    const isSubmittedToday = (dateString: string) => {
         const taskDate = new Date(dateString);
         const today = new Date();
 
@@ -37,8 +35,8 @@ export default async function TodayTasks() {
 
     // Sort: Unsubmitted tasks first (false before true)
     const sortedTaskList = [...taskList].sort((a, b) => {
-        const aSubmitted = isSubmittedToday(a.date, a.task);
-        const bSubmitted = isSubmittedToday(b.date, b.task);
+        const aSubmitted = isSubmittedToday(a.date);
+        const bSubmitted = isSubmittedToday(b.date);
 
         // Put false (pending) before true (submitted)
         return Number(bSubmitted) - Number(aSubmitted);
@@ -76,7 +74,7 @@ export default async function TodayTasks() {
             <div className="space-y-4">
                 {await Promise.all(
                     sortedTaskList.map(async (item) => {
-                        const submittedToday = isSubmittedToday(item.date, item.task);
+                        const submittedToday = isSubmittedToday(item.date);
 
                         // Fetch user profile data using email
                         const userData = await getDataByEmail(item.email);
